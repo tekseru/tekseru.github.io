@@ -58,7 +58,7 @@
         kazakhText = kazakhText.replace(regex, function(match, beforeU, afterU, afterA) {
             // Если условие совпадает, заменяем буквы
             if (beforeU && afterU && afterA) {
-                return beforeU + 'ө' + afterU + 'е' + afterA;
+                return beforeU + 'ө' + afterU + afterA + 'е';
             } else {
                 return match; // Возвращаем исходное слово без изменений
             }
