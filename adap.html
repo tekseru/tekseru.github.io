@@ -53,9 +53,15 @@
                 return [];
             });
 
-        var regex = new RegExp('\\b(' + russianWords.join('|') + ')\\b', 'gi');
-        kazakhText = kazakhText.replace(regex, function(match) {
-            return match.replace('у', 'ө').replace('а', 'е');
+        // Проверяем, содержит ли слово согласный, буква у, согласный, согласный, буква а
+        const regex = /([бвгджзйклмнпрстфхцчшщ])у([бвгджзйклмнпрстфхцчшщ])([бвгджзйклмнпрстфхцчшщ])а/ig;
+        kazakhText = kazakhText.replace(regex, function(match, beforeU, afterU, afterA) {
+            // Если условие совпадает, заменяем буквы
+            if (beforeU && afterU && afterA) {
+                return beforeU + 'ө' + afterU + 'е' + afterA;
+            } else {
+                return match; // Возвращаем исходное слово без изменений
+            }
         });
 
         document.getElementById("resultText").value = kazakhText;
