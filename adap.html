@@ -53,19 +53,10 @@
                 return [];
             });
 
-        var found = false;
-        for (var i = 0; i < russianWords.length; i++) {
-            if (kazakhText.includes(russianWords[i])) {
-                found = true;
-                kazakhText = kazakhText.replace('у', 'ө');
-                kazakhText = kazakhText.replace('а', 'е');
-                break;
-            }
-        }
-
-        if (!found) {
-            console.log("Слово не найдено в файле russian.json");
-        }
+        var regex = new RegExp('\\b(' + russianWords.join('|') + ')\\b', 'gi');
+        kazakhText = kazakhText.replace(regex, function(match) {
+            return match.replace('у', 'ө').replace('а', 'е');
+        });
 
         document.getElementById("resultText").value = kazakhText;
     }
