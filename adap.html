@@ -41,43 +41,39 @@
 <textarea id="resultText" readonly></textarea>
 
 <script>
-    function adaptText() {
+    async function adaptText() {
         var kazakhText = document.getElementById("kazakhText").value.trim();
         
         // Загружаем содержимое файла russian.json
-        var russianWords = {
-            "words": [
-                "слово1",
-                "слово2",
-                "слово3"
-                // Добавьте свои слова из файла russian.json здесь
-            ]
-        };
+        var russianWords = await fetch('russian.json')
+            .then(response => response.json())
+            .then(data => data.words)
+            .catch(error => {
+                console.error('Ошибка при загрузке файла russian.json:', error);
+                return [];
+            });
 
-        const words = russianWords.words; // Получаем массив слов из файла
-        if (words.includes(kazakhText)) { // Проверяем наличие слова в массиве
-            // Если слово найдено, применяем логику адаптации текста
-            const match = kazakhText.match(/([бвгджзйклмнпрстфхцчшщ])у([бвгджзйклмнпрстфхцчшщ])([бвгджзйклмнпрстфхцчшщ])а/i);
-            if (match) {
-                const beforeU = match[1];
-                const afterU = match[2];
-                const afterA = match[3];
+        var found = false;
+        for (var i = 0; i < russianWords.length; i++) {
+            if (kazakhText.includes(russianWords[i])) {
+                found = true;
                 kazakhText = kazakhText.replace('у', 'ө');
                 kazakhText = kazakhText.replace('а', 'е');
+                break;
             }
-        } else {
-            // Если слово не найдено, оставляем текст без изменений
+        }
+
+        if (!found) {
             console.log("Слово не найдено в файле russian.json");
         }
 
-        // Выводим адаптированный или исходный текст в результате
         document.getElementById("resultText").value = kazakhText;
     }
 
     function deleteText() {
         var kazakhText = document.getElementById("kazakhText");
-        kazakhText.value = ""; // Очистка содержимого первого текстового поля
-        document.getElementById("resultText").value = ""; // Очистка содержимого текстового поля для результата
+        kazakhText.value = "";
+        document.getElementById("resultText").value = "";
     }
 
     function copyText() {
