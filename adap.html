@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazaq Grammar Könverter</title>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h2>Qazaq Grammar Könverter</h2>
+
+<label for="kazakhText">Qazaqca söz jaz:</label>
+<textarea id="kazakhText"></textarea>
+
+<button onclick="adaptText()">Säykestew</button>
+<button onclick="deleteText()">Öciriw</button>
+<button onclick="copyText()">Köciriw</button>
+
+<label for="resultText">Natıje:</label>
+<textarea id="resultText" readonly></textarea>
+
+<script>
+    function adaptText() {
+        var kazakhText = document.getElementById("kazakhText").value.trim();
+        
+        // Загружаем содержимое файла russian.json
+        var russianWords = {
+            "words": [
+                "слово1",
+                "слово2",
+                "слово3"
+                // Добавьте свои слова из файла russian.json здесь
+            ]
+        };
+
+        const words = russianWords.words; // Получаем массив слов из файла
+        if (words.includes(kazakhText)) { // Проверяем наличие слова в массиве
+            // Если слово найдено, применяем логику адаптации текста
+            const match = kazakhText.match(/([бвгджзйклмнпрстфхцчшщ])у([бвгджзйклмнпрстфхцчшщ])([бвгджзйклмнпрстфхцчшщ])а/i);
+            if (match) {
+                const beforeU = match[1];
+                const afterU = match[2];
+                const afterA = match[3];
+                kazakhText = kazakhText.replace('у', 'ө');
+                kazakhText = kazakhText.replace('а', 'е');
+            }
+        } else {
+            // Если слово не найдено, оставляем текст без изменений
+            console.log("Слово не найдено в файле russian.json");
+        }
+
+        // Выводим адаптированный или исходный текст в результате
+        document.getElementById("resultText").value = kazakhText;
+    }
+
+    function deleteText() {
+        var kazakhText = document.getElementById("kazakhText");
+        kazakhText.value = ""; // Очистка содержимого первого текстового поля
+        document.getElementById("resultText").value = ""; // Очистка содержимого текстового поля для результата
+    }
+
+    function copyText() {
+        var resultText = document.getElementById("resultText");
+        resultText.select();
+        document.execCommand("copy");
+    }
+</script>
+
+</body>
+</html>
