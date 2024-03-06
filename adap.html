@@ -41,18 +41,34 @@
 <textarea id="resultText" readonly></textarea>
 
 <script>
-    async function adaptText() {
-        var kazakhText = document.getElementById("kazakhText").value.trim();
-        
-        // Проверяем, содержит ли слово согласный, буква у, согласный, согласный, буква а
-        const regex1 = /а([бвгджзйклмнпрстфхцчшщ])е/ig;
-        kazakhText = kazakhText.replace(regex1, function(match, p1) {
-            if (p1) {
-                return 'ә' + p1 + 'е';
-            } else {
-                return match;
-            }
-        });
+    // Загружаем содержимое файла russian.json
+async function loadRussianWords() {
+    try {
+        const response = await fetch('russian.json');
+        const data = await response.json();
+        return data.words || []; // Предполагается, что данные содержат ключ "words"
+    } catch (error) {
+        console.error('Ошибка при загрузке файла russian.json:', error);
+        return [];
+    }
+}
+
+async function adaptText() {
+    var kazakhText = document.getElementById("kazakhText").value.trim();
+    
+    // Загружаем слова на русском языке
+    var russianWords = await loadRussianWords();
+
+    // Проверяем, содержит ли слово согласный, буква у, согласный, согласный, буква а
+    const regex1 = /а([бвгджзйклмнпрстфхцчшщ])е/ig;
+    kazakhText = kazakhText.replace(regex1, function(match, p1) {
+        if (p1) {
+            return 'ә' + p1 + 'е';
+        } else {
+            return match;
+        }
+    });
+
   const regex2 = /а([бвгджзйклмнпрстфхцчшщ])о/ig;
 
         // Заменяем совпадения, используя функцию обратного вызова
@@ -67,11 +83,6 @@
         });
 
 const regex3 = /а([бвгджзйклмнпрстфхцчшщ])я/ig;
-
-    
-
-        // карусель - кәрісел кресло - күрсел программа - бұр   пластырь - бұла сыр
-
         kazakhText = kazakhText.replace(regex3, function(match, p1) {
             // Если условие совпадает, заменяем буквы
             if (p1) {
@@ -83,12 +94,18 @@ const regex3 = /а([бвгджзйклмнпрстфхцчшщ])я/ig;
         });
 
   
-        // Добавляем остальные регулярные выражения здесь
-        // ...
-        // ваш код здесь
 
-        document.getElementById("resultText").value = kazakhText;
-    }
+
+
+
+
+
+
+    
+
+    document.getElementById("resultText").value = kazakhText;
+}
+
 
     function deleteText() {
         var kazakhText = document.getElementById("kazakhText");
