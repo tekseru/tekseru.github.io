@@ -41,47 +41,29 @@
 <textarea id="resultText" readonly></textarea>
 
 <script>
-  async function adaptText() {
-    var kazakhText = document.getElementById("kazakhText").value.trim();
-    
-    kazakhText = kazakhText.replace(/а([бвгджзйклмнпрстфхцчшщ])([ео])/ig, function(match, p1, p2) {
-        return (p2 === 'е' ? 'ә' : 'а') + p1 + (p2 === 'е' ? 'е' : 'ы');
-    });
-
-    kazakhText = kazakhText.replace(/у([бвгджзйклмнпрстфхцчшщ])([ео])/ig, function(match, p1, p2) {
-        return (p2 === 'е' ? 'ө' : 'ұ') + p1 + 'е';
-    });
-
-    kazakhText = kazakhText.replace(/([бвгджзйклмнпрстфхцчшщ])([аиюя])/ig, function(match, p1, p2) {
-        if (p2 === 'а') return 'ә';
-        if (p2 === 'и') return 'і';
-        if (p2 === 'ю') return 'ү';
-        if (p2 === 'я') return 'а';
-    });
-
-    document.getElementById("resultText").value = kazakhText;
-}
-
-function deleteText() {
-    document.getElementById("kazakhText").value = "";
-    document.getElementById("resultText").value = "";
-}
-
-function copyText() {
-    var resultText = document.getElementById("resultText");
-    resultText.select();
-    document.execCommand("copy");
-}
-
-
-
-
-
-
-
-
-
+    async function adaptText() {
+        var kazakhText = document.getElementById("kazakhText").value.trim();
         
+        // Загружаем содержимое файла russian.json
+        var russianWords = await fetch('russian.json')
+            .then(response => response.json())
+            .then(data => data.words)
+            .catch(error => {
+                console.error('Ошибка при загрузке файла russian.json:', error);
+                return [];
+            });
+
+        // Проверяем, содержит ли слово согласный, буква у, согласный, согласный, буква а
+        const regex = /([бвгджзйклмнпрстфхцчшщ])у([бвгджзйклмнпрстфхцчшщ])([бвгджзйклмнпрстфхцчшщ])а/ig;
+        kazakhText = kazakhText.replace(regex, function(match, beforeU, afterU, afterA) {
+            // Если условие совпадает, заменяем буквы
+            if (beforeU && afterU && afterA) {
+                return beforeU + 'ө' + afterU + afterA + 'е';
+            } else {
+                return match; // Возвращаем исходное слово без изменений
+            }
+        });
+
         document.getElementById("resultText").value = kazakhText;
     }
 
