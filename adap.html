@@ -44,25 +44,48 @@
     async function adaptText() {
         var kazakhText = document.getElementById("kazakhText").value.trim();
         
-        // Загружаем содержимое файла russian.json
-        var russianWords = await fetch('russian.json')
-            .then(response => response.json())
-            .then(data => data.words)
-            .catch(error => {
-                console.error('Ошибка при загрузке файла russian.json:', error);
-                return [];
-            });
-
         // Проверяем, содержит ли слово согласный, буква у, согласный, согласный, буква а
-        const regex = /([бвгджзйклмнпрстфхцчшщ])у([бвгджзйклмнпрстфхцчшщ])([бвгджзйклмнпрстфхцчшщ])а/ig;
-        kazakhText = kazakhText.replace(regex, function(match, beforeU, afterU, afterA) {
-            // Если условие совпадает, заменяем буквы
-            if (beforeU && afterU && afterA) {
-                return beforeU + 'ө' + afterU + afterA + 'е';
+        const regex1 = /а([бвгджзйклмнпрстфхцчшщ])е/ig;
+        kazakhText = kazakhText.replace(regex1, function(match, p1) {
+            if (p1) {
+                return 'ә' + p1 + 'е';
             } else {
+                return match;
+            }
+        });
+  const regex2 = /а([бвгджзйклмнпрстфхцчшщ])о/ig;
+
+        // Заменяем совпадения, используя функцию обратного вызова
+        kazakhText = kazakhText.replace(regex2, function(match, p1) {
+            // Если условие совпадает, заменяем буквы
+            if (p1) {
+                return 'а'+ p1 + 'ы';
+            } else {
+
                 return match; // Возвращаем исходное слово без изменений
             }
         });
+
+const regex3 = /а([бвгджзйклмнпрстфхцчшщ])я/ig;
+
+        // Заменяем совпадения, используя функцию обратного вызова бревно - бөрене
+
+        // карусель - кәрісел кресло - күрсел программа - бұр   пластырь - бұла сыр
+
+        kazakhText = kazakhText.replace(regex3, function(match, p1) {
+            // Если условие совпадает, заменяем буквы
+            if (p1) {
+                return 'ә' + p1 + 'е';
+            } else {
+
+                return match; // Возвращаем исходное слово без изменений
+            }
+        });
+
+  
+        // Добавляем остальные регулярные выражения здесь
+        // ...
+        // ваш код здесь
 
         document.getElementById("resultText").value = kazakhText;
     }
